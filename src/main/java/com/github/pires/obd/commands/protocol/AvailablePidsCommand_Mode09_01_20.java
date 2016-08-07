@@ -25,5 +25,16 @@ public class AvailablePidsCommand_Mode09_01_20 extends AvailablePidsCommand {
 	public String getName() {
 		return AvailableCommandNames.PIDS_MODE09_01_20.getValue();
 	}
-
+	
+    /** {@inheritDoc} */
+    @Override
+    protected int getMode() {
+    	return 0x09;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected int getStartPID() {
+    	return 0x01;
+    }
 }

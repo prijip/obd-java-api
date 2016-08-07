@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Base OBD command.
@@ -34,6 +35,35 @@ public abstract class ObdCommand {
     protected Long responseDelayInMs = null;
     private long start;
     private long end;
+    private static HashMap<String, Boolean> commandSupportedMap = new HashMap<String, Boolean>();
+    
+    public static boolean isCommandSupported(ObdCommand command) {
+    	Boolean isCommandSupported = commandSupportedMap.get(command.cmd);
+    	// If it is not known yet, assume the command is supported
+    	if (isCommandSupported == null) {
+    		System.out.println("*** DBGMSG *** isCommandSupported: Unknown status for " + command.cmd);
+    		return true;
+    	}
+    	if (isCommandSupported == Boolean.TRUE) {
+    		System.out.println("*** DBGMSG *** isCommandSupported: Result is true for " + command.cmd);
+    		return true;
+    	}
+
+    	return false;
+    }
+    
+    public static void setPIDSupported(int mode, int pid, Boolean isSupported) {
+    	String key = String.format("%02X %02X", mode, pid);
+    	commandSupportedMap.put(key, isSupported);
+    }
+    
+    public static void clearPIDSupported() {
+    	commandSupportedMap.clear();
+    }
+
+    public String getRawCommandString() {
+    	return cmd;
+    }
 
     /**
      * Default ctor to use
@@ -74,6 +104,12 @@ public abstract class ObdCommand {
             InterruptedException {
         synchronized (ObdCommand.class) {//Only one command can write and read a data in one time.
             start = System.currentTimeMillis();
+            // Skip any remnant bytes from the stream
+            for (int n = in.available(); n > 0; n = in.available()) {
+            	System.err.println("*** DBGMSG *** Skipping remnant bytes " + n);
+            	in.skip((long)n);
+            }
+            
             sendCommand(out);
             readResult(in);
             end = System.currentTimeMillis();
@@ -171,6 +207,25 @@ public abstract class ObdCommand {
         byte b = 0;
         StringBuilder res = new StringBuilder();
 
+        /*
+        // Wait for data to arrive
+        try {
+	        if (in.available() <= 0) {
+	        	System.err.println("***DEBUG***: Data not available in stream");
+	        	for (int waitCounter = 5;
+	        			(waitCounter > 0) && (in.available() <= 0); 
+	        			--waitCounter) {
+	        		System.err.println("***DEBUG***: Data not available in stream. Count Down.. #" + waitCounter);
+	        		Thread.sleep(100);
+	        	}
+	        } else {
+	        	System.err.println("***DEBUG***: Data IS available in stream");
+	        }
+        }
+	    catch (Exception e) {
+	    	
+	    }
+		*/
         // read until '>' arrives OR end of stream reached
         char c;
         // -1 if the end of the stream is reached

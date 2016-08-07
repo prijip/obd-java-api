@@ -31,4 +31,16 @@ public class AvailablePidsCommand_21_40 extends AvailablePidsCommand {
     public String getName() {
         return AvailableCommandNames.PIDS_21_40.getValue();
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected int getMode() {
+    	return 0x01;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    protected int getStartPID() {
+    	return 0x21;
+    }
 }

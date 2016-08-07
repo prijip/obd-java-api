@@ -8,13 +8,13 @@ import com.github.pires.obd.enums.AvailableCommandNames;
  * @author pires
  * @version $Id: $Id
  */
-public class AvailablePidsCommand_01_20 extends AvailablePidsCommand {
+public class AvailablePidsCommand_Mode02_01_20 extends AvailablePidsCommand {
 
     /**
      * Default ctor.
      */
-    public AvailablePidsCommand_01_20() {
-        super("01 00");
+    public AvailablePidsCommand_Mode02_01_20() {
+        super("02 00");
     }
 
     /**
@@ -22,20 +22,20 @@ public class AvailablePidsCommand_01_20 extends AvailablePidsCommand {
      *
      * @param other a {@link com.github.pires.obd.commands.protocol.AvailablePidsCommand} object.
      */
-    public AvailablePidsCommand_01_20(AvailablePidsCommand_01_20 other) {
+    public AvailablePidsCommand_Mode02_01_20(AvailablePidsCommand_Mode02_01_20 other) {
         super(other);
     }
 
     /** {@inheritDoc} */
     @Override
     public String getName() {
-        return AvailableCommandNames.PIDS_01_20.getValue();
+        return AvailableCommandNames.PIDS_MODE02_01_20.getValue();
     }
     
     /** {@inheritDoc} */
     @Override
     protected int getMode() {
-    	return 0x01;
+    	return 0x02;
     }
     
     /** {@inheritDoc} */

@@ -48,6 +48,9 @@ public enum AvailableCommandNames {
     DESCRIBE_PROTOCOL("Describe protocol"),
     DESCRIBE_PROTOCOL_NUMBER("Describe protocol number"),
     IGNITION_MONITOR("Ignition monitor"),
+    PIDS_MODE02_01_20("Available Mode 02 PIDs 01-20"),
+    PIDS_MODE02_21_40("Available Mode 02 PIDs 21-40"),
+    PIDS_MODE02_41_60("Available Mode 02 PIDs 41-60"), 
     PIDS_MODE09_01_20("Available Mode 09 PIDs 01-20")
     ;
 
