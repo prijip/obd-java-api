@@ -55,7 +55,7 @@ public abstract class ObdCommand {
     		return CommandSupportStatus.Supported;
     	}
 
-    	return CommandSupportStatus.Supported;
+    	return CommandSupportStatus.NotSupported;
     }
     
     public static void setPIDSupported(int mode, int pid, Boolean isSupported) {
