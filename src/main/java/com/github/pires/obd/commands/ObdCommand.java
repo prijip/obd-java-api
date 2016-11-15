@@ -37,19 +37,25 @@ public abstract class ObdCommand {
     private long end;
     private static HashMap<String, Boolean> commandSupportedMap = new HashMap<String, Boolean>();
     
-    public static boolean isCommandSupported(ObdCommand command) {
+    public enum CommandSupportStatus {
+    	Unknown,
+    	NotSupported,
+    	Supported
+    };
+    
+    public static CommandSupportStatus getCommandSupportStatus(ObdCommand command) {
     	Boolean isCommandSupported = commandSupportedMap.get(command.cmd);
-    	// If it is not known yet, assume the command is supported
+
     	if (isCommandSupported == null) {
     		System.out.println("*** DBGMSG *** isCommandSupported: Unknown status for " + command.cmd);
-    		return true;
+    		return CommandSupportStatus.Unknown;
     	}
     	if (isCommandSupported == Boolean.TRUE) {
     		System.out.println("*** DBGMSG *** isCommandSupported: Result is true for " + command.cmd);
-    		return true;
+    		return CommandSupportStatus.Supported;
     	}
 
-    	return false;
+    	return CommandSupportStatus.Supported;
     }
     
     public static void setPIDSupported(int mode, int pid, Boolean isSupported) {
