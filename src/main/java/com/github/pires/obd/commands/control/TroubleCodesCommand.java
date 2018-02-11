@@ -57,16 +57,25 @@ public class TroubleCodesCommand extends ObdCommand {
 
         String canOneFrame = result.replaceAll("[\r\n]", "");
         int canOneFrameLength = canOneFrame.length();
+        int dtcCount = -1;
         if (canOneFrameLength <= 16 && canOneFrameLength % 4 == 0) {//CAN(ISO-15765) protocol one frame.
             workingData = canOneFrame;//43yy{codes}
             startIndex = 4;//Header is 43yy, yy showing the number of data items.
+            dtcCount = Integer.parseInt(workingData.substring(2, 4));
         } else if (result.contains(":")) {//CAN(ISO-15765) protocol two and more frames.
             workingData = result.replaceAll("[\r\n].:", "");//xxx43yy{codes}
             startIndex = 7;//Header is xxx43yy, xxx is bytes of information to follow, yy showing the number of data items.
+            dtcCount = Integer.parseInt(workingData.substring(5, 7));
         } else {//ISO9141-2, KWP2000 Fast and KWP2000 5Kbps (ISO15031) protocols.
             workingData = result.replaceAll("^43|[\r\n]43|[\r\n]", "");
         }
+        int dtcIndex = 0;
         for (int begin = startIndex; begin < workingData.length(); begin += 4) {
+            // If dtcCount is known, and we already have that many DTCs,
+            // stop iterating.  There can be junk data at the end
+            if ((dtcCount > 0) && (dtcIndex == dtcCount)) {
+                break;
+            }
             String dtc = "";
             byte b1 = hexStringToByteArray(workingData.charAt(begin));
             int ch1 = ((b1 & 0xC0) >> 6);
@@ -79,6 +88,7 @@ public class TroubleCodesCommand extends ObdCommand {
             }
             codes.append(dtc);
             codes.append('\n');
+            ++dtcIndex;
         }
     }
 
