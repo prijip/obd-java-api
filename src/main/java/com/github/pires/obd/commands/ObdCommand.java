@@ -216,6 +216,7 @@ public abstract class ObdCommand {
         /*
         // Wait for data to arrive
         try {
+            System.err.println("***DEBUG***: Data not available in stream");
 	        if (in.available() <= 0) {
 	        	System.err.println("***DEBUG***: Data not available in stream");
 	        	for (int waitCounter = 5;
@@ -224,18 +225,22 @@ public abstract class ObdCommand {
 	        		System.err.println("***DEBUG***: Data not available in stream. Count Down.. #" + waitCounter);
 	        		Thread.sleep(100);
 	        	}
-	        } else {
-	        	System.err.println("***DEBUG***: Data IS available in stream");
 	        }
+            System.err.println("***DEBUG***: There is " + in.available() + " bytes in the BT stream");
         }
 	    catch (Exception e) {
-	    	
+            e.printStackTrace();
 	    }
-		*/
+	    */
         // read until '>' arrives OR end of stream reached
+        // TODO: Implement a timeout logic, so that if the device
+        // does not respond as expected (no '>') this does not wait forever
         char c;
         // -1 if the end of the stream is reached
-        while (((b = (byte) in.read()) > -1)) {
+        while (((b = (byte) in.read()) != -1)) {
+            if (b < 0) { // Skip negative values
+                continue;
+            }
             c = (char) b;
             if (c == '>') // read until '>' arrives
             {
